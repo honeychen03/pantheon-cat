@@ -1,0 +1,29 @@
+{
+  "name": "pantheon.cat.user",
+  "description": "Pantheon CAT User API",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/pantheon-cat"
+  },
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "start": "sls offline start --stage local",
+    "deploy": "tapdev cloned 'tapdev deploy-prep && cd routes/user && sls deploy'",
+    "test:all": "ava */test",
+    "test": "ava -s */test/*.js",
+    "coverage": "nyc ava -sv */test/**.js",
+    "open-coverage": "open coverage/lcov-report/index.html"
+  },
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "serverless-offline": "^3.14.2",
+    "ava": "^0.19.1",
+    "sinon": "^2.3.5",
+    "serverless-plugin-warmup": "^3.0.2-rc.1"
+  }
+}

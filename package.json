@@ -1,0 +1,22 @@
+{
+  "name": "pantheon.cat",
+  "version": "1.0.0",
+  "description": "a test",
+  "main": "index.js",
+  "scripts": {
+	  "start": "npm run local",
+	  "local": "npm-run-all --parallel local:user local:language",
+	  "local:user": "npm start --prefix ./routes/user/",
+	  "local:language": "npm start --prefix ./routes/language/"
+  },
+  "devDependencies": {
+	  "npm-run-all": "4.0.2",
+	    "serverless-offline": "^3.14.2",
+	    "serverless-plugin-warmup": "^3.0.2-rc.1",
+	    "lodash.get": "^4.4.2",
+	    "ajv": "^5.1.3",
+	    "http-errors": "^1.6.1",
+	    "clean-stack": "^1.3.0",
+	    "querystrings": "^0.4.0"
+	  }
+}

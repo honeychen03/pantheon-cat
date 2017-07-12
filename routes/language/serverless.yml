@@ -1,0 +1,62 @@
+service: pantheon-cat-language
+frameworkVersion: ">=1.16.0"
+
+provider:
+  name: aws
+  stage: ${opt:stage, self:custom.defaultStage}
+  profile: ${self:custom.${self:provider.stage}.profile}
+  region: us-west-2
+  runtime: nodejs6.10
+  memorySize: 1024
+  timeout: 30
+  cfLogs: true
+  role: ${self:custom.${self:provider.stage}.role}
+  vpc: ${self:custom.${self:provider.stage}.vpc}
+  environment: ${self:custom.${self:provider.stage}.environment}
+  deploymentBucket: ${self:custom.${self:provider.stage}.deploymentBucket}
+
+custom:
+  defaultStage: local
+
+  serverless-offline:
+    port: 4001
+
+  local:
+    profile: welocalize-dev
+    authorizer: arn:aws:lambda:us-west-2:379633348023:function:tekmor-v3-dev-authorizer
+    role: local
+    vpc: local
+    deploymentBucket: welo-ci-artifacts
+    environment:
+      DB_CREDS_UNENCRYPTED: '{"host": "127.0.0.1", "project": "pantheon", "dialect": "postgres", "database": "testing", "username": "writeruser", "password": "password"}'
+      STAGE: local
+      BASE_PATH: "./"
+      ASSET_BUCKET: welo-assets
+
+plugins:
+  - serverless-plugin-warmup
+  - serverless-offline
+  
+functions:
+  listSupportedLangs:
+    warmup: true
+    handler: language.listSupportedLangs
+    events:
+      - http:
+          path: language/listSupportedLangs
+          method: post
+          authorizer:
+            arn: ${self:custom.${self:provider.stage}.authorizer}
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.x-pantheon-auth
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Pantheon-Auth
+            allowCredentials: true
